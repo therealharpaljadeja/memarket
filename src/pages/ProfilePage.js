@@ -1,22 +1,15 @@
-import { Heading, Grid, Box, HStack, VStack, Text, Avatar, Button, Tabs, TabList, Tab } from "@chakra-ui/react";
-import { GrHomeRounded } from "react-icons/gr";
-import { AiOutlineUser } from "react-icons/ai";
-import { BsChatLeft } from "react-icons/bs";
-import { FiUsers, FiSettings } from "react-icons/fi";
-import { IoMdAdd } from "react-icons/io";
-
+import { Heading, Grid, Box, HStack, VStack, Text, Avatar, Button, Tabs, TabList, Tab, Spacer, TabPanels, TabPanel, Image } from "@chakra-ui/react";
+import { BiUser } from "react-icons/bi";
+import { MdOutlineSell } from "react-icons/md"; 
 import CustomAvatar from "../components/CustomAvatar"; 
+import CustomTab from "../components/CustomTab";
 
 function ProfilePage() {
     return (
-        <Grid height="100vh" templateColumns={["1fr", "1fr 1fr 1fr", "1fr 1fr 1fr", "1fr 1fr 1fr"]}>
+        <Grid height="100vh"width="100vw" templateColumns={["1fr", "1fr 1fr 1fr", "1fr 1fr 1fr", "1fr 1fr 1fr"]}>
             <Box display={["none", "none", "block", "block"]} background="black.150">
             </Box>
             <VStack>
-                <HStack justifyContent="space-between" padding={4} borderBottom="1px solid" borderColor="brand.200" position="sticky" zIndex="1000" background="light.200" width="100%" height="8vh" width="inherit" boxShadow="0 10px 200px 6px rgba(0,0,0,.1)">
-                    <Text color="brand.100">CrEco</Text>
-                    <FiSettings stroke="#007aff" />
-                </HStack>
                 <VStack marginTop="" justifyContent="center" padding={5} alignItems="center">
                     <CustomAvatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
                     <VStack spacing={5} width="100%"  alignItems="center">
@@ -42,27 +35,31 @@ function ProfilePage() {
                         </HStack>
                     </VStack>
                 </VStack>
-                <HStack overflowX="scroll" width="100%">
-                    <Tabs overflowX="scroll" isFitted width="100%">
+                <HStack width="100%">
+                    <Tabs colorScheme="brand" isFitted overflowX="scroll" width="100%">
                         <TabList>
-                            <Tab>Listed</Tab>
-                            <Tab>Owned</Tab>
-                            <Tab>Listed</Tab>
-                            <Tab>Listed</Tab>
-                            <Tab>Listed</Tab>
-                            <Tab>Listed</Tab>
+                            <CustomTab icon={<MdOutlineSell />} number="1" />
+                            <CustomTab icon={<BiUser />} number="5" />
                         </TabList>
+                        <TabPanels>
+                            <TabPanel padding={0}>
+                                <Grid overflowY="scroll" gridGap="1px" templateColumns="repeat(3, 1fr)">
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Red_Square1.jpg" />
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Red_Square1.jpg" />
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Red_Square1.jpg"/>
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Red_Square1.jpg" />
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Red_Square1.jpg" />
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Red_Square1.jpg"/>
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Red_Square1.jpg" />
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Red_Square1.jpg" />
+                                    <Image src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Red_Square1.jpg"/>
+                                </Grid>
+                            </TabPanel>
+                        </TabPanels>
                     </Tabs>
                 </HStack>
-                <HStack width="100%" position="sticky" borderTop="1px solid" borderColor="brand.200" justifyContent="space-between" alignSelf="flex-end" padding={5} width="100%" height="8vh"  width="inherit" boxShadow="0 -10px 200px 6px rgba(0,0,0,.1)">
-                    <GrHomeRounded size="22px" />
-                    <FiUsers size="22px" />
-                    <IoMdAdd size="25px" />
-                    <BsChatLeft size="22px" />
-                    <AiOutlineUser size="25px" />
-                </HStack>
             </VStack>
-            <Box  display={["none", "none", "block", "block"]} background="black.150">
+            <Box display={["none", "none", "block", "block"]} background="black.150">
             </Box>
         </Grid>
     );
