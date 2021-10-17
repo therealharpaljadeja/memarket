@@ -1,6 +1,7 @@
 export default {
     baseStyle: {
-        fontFamily: "Inter"
+        fontFamily: "Inter",
+        fontWeight: "700"
     },
     sizes: {
         sm: {
