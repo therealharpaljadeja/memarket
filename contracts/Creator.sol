@@ -34,7 +34,9 @@ contract Creator is Context {
         
         NFT nftCollection = new NFT(_nftCollectionName, _nftCollectionSymbol);
         Token token = new Token(_tokenName, _tokenSymbol, _tokenSupply);
-        
+        token.transfer(_msgSender(), token.balanceOf(address(this)));
+        token.transferOwnership(_msgSender());
+
         nftCollectionAddress = address(nftCollection);
         tokenAddress = address(token);
     }

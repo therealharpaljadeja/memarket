@@ -142,6 +142,8 @@ describe("NFT", function() {
 
     await tokenContract.connect(firstSigner).transfer(buyerSigner.address, ethers.utils.parseUnits("0.1", "ether"));
 
+    await tokenContract.connect(buyerSigner).approve(nftMarket.address, ethers.utils.parseUnits("0.1", "ether"));
     await nftMarket.connect(buyerSigner).createMarketSale(nftContractAddress, 1);
+
   })
 });
