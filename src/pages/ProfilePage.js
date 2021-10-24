@@ -1,4 +1,5 @@
 import { Heading, Grid, Box, HStack, VStack, Text, Avatar, Button, Tabs, TabList, Tab, Spacer, TabPanels, TabPanel, Image } from "@chakra-ui/react";
+import { useState } from "react";
 import { BiUser } from "react-icons/bi";
 import { MdOutlineSell } from "react-icons/md"; 
 import CustomAvatar from "../components/CustomAvatar"; 
@@ -7,6 +8,9 @@ import ProfileBody from "../components/ProfileBody";
 import ProfileHeader from "../components/ProfileHeader";
 
 function ProfilePage() {
+
+    const [ userConnected, setUserConnected ] = useState(false);
+
     return (
         <VStack width="100%" padding={0}>
             <ProfileHeader />

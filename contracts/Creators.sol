@@ -18,11 +18,11 @@ contract Creators is Context {
         marketplaceAddress = _marketplaceAddress;
     }
 
-    function registerUser(string memory username, string memory name, string memory bio, string memory nftCollectionName, string memory nftCollectionSymbol, string memory tokenName, string memory tokenSymbol, uint256 tokenSupply) external returns (bool) {
+    function registerUser(string memory username, string memory name, string memory bio, string memory profilePicUrl, string memory nftCollectionName, string memory nftCollectionSymbol, string memory tokenName, string memory tokenSymbol, uint256 tokenSupply) external returns (bool) {
         address temp = usernameToAddressMapping[username];
         require(temp == address(0), "Username already exists");
         
-        Creator creator = new Creator(marketplaceAddress, username, name, bio, nftCollectionName, nftCollectionSymbol, tokenName, tokenSymbol, tokenSupply);
+        Creator creator = new Creator(marketplaceAddress, username, name, bio, profilePicUrl, nftCollectionName, nftCollectionSymbol, tokenName, tokenSymbol, tokenSupply);
         usernameToCreatorMapping[username] = address(creator);
         addressToCreatorMapping[_msgSender()] = address(creator);
 

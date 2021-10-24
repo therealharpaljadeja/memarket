@@ -11,6 +11,7 @@ contract Creator is Context {
     string public username;
     string public name;
     string public bio;
+    string public profilePicUrl;
     address public nftCollectionAddress;
     address public tokenAddress;
 
@@ -20,7 +21,8 @@ contract Creator is Context {
         address _marketplaceAddress, 
         string memory _username, 
         string memory _name, 
-        string memory _bio, 
+        string memory _bio,
+        string memory _profilePicUrl,
         string memory _nftCollectionName, 
         string memory _nftCollectionSymbol, 
         string memory _tokenName, 
@@ -31,6 +33,7 @@ contract Creator is Context {
         name = _name;
         username = _username;
         bio = _bio;
+        profilePicUrl = _profilePicUrl;
         
         NFT nftCollection = new NFT(_nftCollectionName, _nftCollectionSymbol);
         Token token = new Token(_tokenName, _tokenSymbol, _tokenSupply);
