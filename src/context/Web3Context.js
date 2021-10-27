@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { isUserRegistered } from "../utils/Creator";
-
+import { isUserRegistered, getCreatorAddress, registerUser } from "../utils/Creators";
+import { providers } from "ethers";
 
 const validNetworkOptions = {
     chainId: '0xaef3',
@@ -25,47 +25,69 @@ export function Web3ContextProvider({ children }) {
 
     useEffect(() => {
         if(window.ethereum) {
-            setProvider(window.ethereum);
-        }
-    }, []);
-
-    useEffect(() => {
-        if(provider) {
-            setChainId(provider.chainId);
-
-            provider.on("chainChanged", (chainId) => {
+            setProvider(new providers.Web3Provider(window.ethereum));
+            
+            window.ethereum.on("chainChanged", (chainId) => {
                 setChainId(chainId);
             });
 
-            provider.on("accountsChanged", (accounts) => {
+            window.ethereum.on("accountsChanged", (accounts) => {
+                console.log("Accounts Changed");
                 setAccount(accounts[0]);
             })
         }
-    }, [provider])
+    }, []);
 
+    
     useEffect(() => {
-        (async () => {
-            let result = await checkUserRegistered(provider);
-            setUserRegistered(result);
-        })();
+        console.log(provider, account);
+        if(provider != undefined && account != undefined) {
+            const init = async () => {
+                let result = await checkUserRegistered();
+                console.log(result);
+                setUserRegistered(result);
+            }
+            init();
+        }
     }, [account]);
 
+    useEffect(() => {
+        if(provider) {
+            setChainId(provider.chainId);  
+        }
+    }, [provider])
+
+
     async function connectWallet() {
-        const accounts = await provider.request({ method: "eth_requestAccounts" });
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         setAccount(accounts[0]);
     }
 
     async function requestNetworkChange() {
-        provider.request({ 
+        console.log("requesting network change");
+        console.log(window.ethereum);
+        window.ethereum.request({ 
             method: "wallet_addEthereumChain",
             params: [validNetworkOptions]
         })
     }
 
     async function checkUserRegistered() {
+        console.log("Checking if user registered");
         let result = await isUserRegistered(provider);
         return result;
     }
+
+    async function getCreatorAddressFromUsername(username) {
+        let result = await getCreatorAddress(provider, username);
+        return result;
+    }
+
+    async function registerCreator(creator) {
+        const result = await registerUser(provider, creator);
+        return result;
+    }
+
     return (
         <Web3Context.Provider 
             value={{ 
@@ -75,7 +97,10 @@ export function Web3ContextProvider({ children }) {
                 chainId,
                 requestNetworkChange,
                 account,
-                userRegistered
+                userRegistered,
+                getCreatorAddressFromUsername,
+                checkUserRegistered,
+                registerCreator
             }}
         >
             {children}

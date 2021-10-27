@@ -24,6 +24,7 @@ async function main() {
   const Creators = await ethers.getContractFactory("Creators"); 
   const creators = await Creators.deploy(nftMarket.address);
   await creators.deployed();
+  console.log(`Creators deployed at ${creators.address}`);
 
   console.log(await getDeployerBalance(deployer));
   console.log("Deploying a Test Creator Contract");

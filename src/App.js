@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import {
     ChakraProvider,
     VStack,
@@ -6,22 +5,15 @@ import {
     Grid,
     Button,
     HStack,
-    FormControl,
-    FormLabel,
-    Input,
     useDisclosure,
-    Textarea,
-    Tag
 } from "@chakra-ui/react";
 import theme from "./theme";
 import "@fontsource/inter/700.css";
 import "@fontsource/inter/400.css";
 import ProfilePage from "./pages/ProfilePage";
-import PostPage from "./pages/PostPage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Feed from "./pages/Feed";
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import CustomModal from "./components/CustomModal";
 import { Web3Context, Web3ContextProvider } from "./context/Web3Context";
 import OnboardingModal from "./components/OnboardingModal";
@@ -34,7 +26,7 @@ function App() {
 
     return (
         <ChakraProvider theme={theme}>
-            <CustomModal modalButtonOnClick={requestNetworkChange} isOpen={chainId != "0xaef3"} onClose={onClose} modalHeader="Invalid Network" modalCloseButton={false} modalFooterButtonText="Change Network">
+            <CustomModal modalButtonOnClick={requestNetworkChange} isOpen={chainId != "0xaef3" && chainId != null} onClose={onClose} modalHeader="Invalid Network" modalCloseButton={false} modalFooterButtonText="Change Network">
             </CustomModal>
             <Grid
                 height="100vh"
@@ -53,18 +45,20 @@ function App() {
                         height="100%"
                         justifyContent="center"
                     >
-                        
                         {
                             account != undefined ?
-                            userRegistered == true ?
-                            <ProfilePage />
-                            :
-                            <OnboardingModal isOpen={isOpen} onClose={onClose} />
+                            // isCheckingUser == true ?
+                                // <Spinner />
+                                // :
+                                userRegistered == true ?
+                                    <ProfilePage />
+                                    :
+                                    <OnboardingModal accountAddress={account} isOpen={userRegistered == false} onClose={onClose} />
                             :
                             <>
-                            <Button onClick={connectWallet}>
-                                Connect Wallet
-                            </Button>
+                                <Button onClick={connectWallet}>
+                                    Connect Wallet
+                                </Button>
                             </>
                         }
                     </HStack>
