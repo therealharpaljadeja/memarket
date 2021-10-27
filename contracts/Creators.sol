@@ -18,7 +18,7 @@ contract Creators is Context {
         marketplaceAddress = _marketplaceAddress;
     }
 
-    function registerUser(string memory username, string memory name, string memory bio, string memory profilePicUrl, string memory nftCollectionName, string memory nftCollectionSymbol, string memory tokenName, string memory tokenSymbol, uint256 tokenSupply) external returns (bool) {
+    function registerUser(string memory username, string memory name, string memory bio, string memory profilePicUrl, string memory nftCollectionName, string memory nftCollectionSymbol, string memory tokenName, string memory tokenSymbol, uint256 tokenSupply) external {
         address temp = usernameToAddressMapping[username];
         require(temp == address(0), "Username already exists");
         
@@ -27,11 +27,13 @@ contract Creators is Context {
         addressToCreatorMapping[_msgSender()] = address(creator);
 
         emit UserRegistered(username, nftCollectionSymbol, tokenSymbol);
-
-        return true;
     }
 
     function getCreatorAddress(string memory username) external view returns (address) {
         return usernameToCreatorMapping[username];
+    }
+
+    function isUserRegistered(address user) external view returns (bool) {
+        return addressToCreatorMapping[user] != address(0);
     }
 }

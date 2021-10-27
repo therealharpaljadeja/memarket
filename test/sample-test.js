@@ -108,11 +108,11 @@ describe("NFT", function() {
 
 
     // create creator
-    await creators.registerUser("azure1050", "test", "Test", "NFTCollection", "NFT", "Token", "MT", ethers.utils.parseUnits("100", "ether"));
+    await creators.registerUser("azure1050", "test", "Test", "http://www.google.com", "NFTCollection", "NFT", "Token", "MT", ethers.utils.parseUnits("100", "ether"));
 
     // get creator address from creators.
     let creator = await creators.getCreatorAddress("azure1050");
-
+    console.log(creator);
     let Creator = await ethers.getContractFactory("Creator");
     let creatorContract = await Creator.attach(creator);
     

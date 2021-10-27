@@ -16,7 +16,7 @@ module.exports = {
       accounts: ["547c7bdb1751eced86f43f102148c1b633610ef919e5a9390ed20921784e3075"]
     },
     velasTestnet: {
-      url: "https://evmexplorer.testnet.velas.com/rpc",
+      url: "https://evmexplorer.testnet.veladev.net/rpc",
       chainId: 111,
       accounts: [process.env.VELAS_PRIVATE_KEY]
     },

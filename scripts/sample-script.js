@@ -1,6 +1,4 @@
 const { ethers } = require("hardhat");
-const hre = require("hardhat");
-const { AiOutlineConsoleSql } = require("react-icons/ai");
 
 async function getDeployerBalance(deployer) {
   return `Deployer Balance: ${ethers.utils.formatEther(await deployer.getBalance())}`;
@@ -29,7 +27,7 @@ async function main() {
 
   console.log(await getDeployerBalance(deployer));
   console.log("Deploying a Test Creator Contract");
-  await creators.registerUser("testUser", "Test", "This is a test user", "TestCollection", "Test", "TestToken", "TT", ethers.utils.parseUnits("100", "ether"));
+  await creators.registerUser("testUser", "Test", "This is a test user", "https://www.google.com", "TestCollection", "Test", "TestToken", "TT", ethers.utils.parseUnits("100", "ether"));
   
   let creator = await creators.getCreatorAddress("testUser");
   console.log(`Creator deployed: ${creator}`);
@@ -40,7 +38,7 @@ async function main() {
   let creatorContract = await Creator.attach(creator);
 
   let nftContractAddress = await creatorContract.nftCollectionAddress();
-  console.log(`NFTCollection for ${creator} is deployed at ${nftCollectionAddress}`);
+  console.log(`NFTCollection for ${creator} is deployed at ${nftContractAddress}`);
 
   let tokenAddress = await creatorContract.tokenAddress();
   console.log(`Token for ${creator} is deployed at ${tokenAddress}`);
