@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/utils/Context.sol";
 import "./Creator.sol";
 
-contract Creators is Context {
+
+contract Creators {
 
     address public marketplaceAddress;
 
@@ -12,25 +12,33 @@ contract Creators is Context {
     mapping(address => address) addressToCreatorMapping;
     mapping(string => address) usernameToAddressMapping;
 
-    event UserRegistered(string indexed username, string indexed nftCollectionSymbol, string indexed tokenSymbol);
+    event UserRegistered(string indexed username, string indexed nftCollectionSymbol);
 
     constructor(address _marketplaceAddress) {
         marketplaceAddress = _marketplaceAddress;
     }
 
-    function registerUser(string memory username, string memory name, string memory bio, string memory profilePicUrl, string memory nftCollectionName, string memory nftCollectionSymbol, string memory tokenName, string memory tokenSymbol, uint256 tokenSupply) external {
+    function registerUser(string memory username, string memory name, string memory bio, string memory profilePicUrl, string memory nftCollectionName, string memory nftCollectionSymbol) external {
         address temp = usernameToAddressMapping[username];
         require(temp == address(0), "Username already exists");
         
-        Creator creator = new Creator(marketplaceAddress, username, name, bio, profilePicUrl, nftCollectionName, nftCollectionSymbol, tokenName, tokenSymbol, tokenSupply);
+        Creator creator = new Creator(username, name, bio, profilePicUrl, nftCollectionName, nftCollectionSymbol);
         usernameToCreatorMapping[username] = address(creator);
-        addressToCreatorMapping[_msgSender()] = address(creator);
+        addressToCreatorMapping[msg.sender] = address(creator);
 
-        emit UserRegistered(username, nftCollectionSymbol, tokenSymbol);
+        emit UserRegistered(username, nftCollectionSymbol);
     }
 
-    function getCreatorAddress(string memory username) external view returns (address) {
+    function getCreatorAddressByUsername(string memory username) external view returns (address) {
         return usernameToCreatorMapping[username];
+    }
+
+    function getCreatorAddressBySender() external view returns (address){
+        return addressToCreatorMapping[msg.sender];
+    }
+
+    function getCreatorAddressByAddress(address _address) external view returns (address) {
+        return addressToCreatorMapping[_address];
     }
 
     function isUserRegistered(address user) external view returns (bool) {

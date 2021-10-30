@@ -1,18 +1,12 @@
 import { useContext, useState } from "react";
 import { FormControl, Input, Textarea, VStack, FormLabel, Image } from "@chakra-ui/react";
 import CustomModal from "./CustomModal";
-// import Web3Storage from "web3.storage";
+import { NFTStorage, File } from "nft.storage";
+import axios from "axios";
 
-import { registerUser } from "../utils/Creators";
 import { Web3Context } from "../context/Web3Context";
 
-// console.log(process.env.REACT_APP_WEB3_STORAGE_API_TOKEN);
-// const web3StorageClient = new Web3Storage({ token: process.env.REACT_APP_WEB3_STORAGE_API_TOKEN });
-// const ipfsImageUpload = async (imageData) => {
-//     const cid = await client.put(imageData);
-//     console.log(cid);
-//     return cid;
-// }
+const client = new NFTStorage({ token: process.env.REACT_APP_NFT_STORAGE_API_KEY });
 
 function OnboardingModal({ isOpen, onClose, accountAddress }) {
 
@@ -23,12 +17,12 @@ function OnboardingModal({ isOpen, onClose, accountAddress }) {
     const [ username, setUsername ] = useState("");
     const [ name, setName ] = useState("");
     const [ bio, setBio ] = useState("");
-    const [ profilePicUrl, setProfilePicUrl ] = useState(null);
+    const [ profilePicUrl, setProfilePicUrl ] = useState("https://bit.ly/dan-abramov");
     const [ nftCollectionName, setNFTCollectionName ] = useState("");
     const [ nftCollectionSymbol, setNFTCollectionSymbol ] = useState("");
-    const [ tokenName, setTokenName ] = useState("");
-    const [ tokenSymbol, setTokenSymbol ] = useState("");
-    const [ totalSupply, setTotalSupply ] = useState(0);
+    // const [ tokenName, setTokenName ] = useState("");
+    // const [ tokenSymbol, setTokenSymbol ] = useState("");
+    // const [ totalSupply, setTotalSupply ] = useState(0);
     const [ registeringUser, setRegisteringUser ] = useState(false);
 
 
@@ -39,12 +33,12 @@ function OnboardingModal({ isOpen, onClose, accountAddress }) {
             username,
             name,
             bio,
-            profilePicUrl: "https://bit.ly/dan-abramov",
+            profilePicUrl,
             nftCollectionName,
-            nftCollectionSymbol,
-            tokenName,
-            tokenSymbol,
-            totalSupply
+            nftCollectionSymbol
+            // tokenName,
+            // tokenSymbol,
+            // totalSupply
         }
 
         await registerCreator(creator);
@@ -57,17 +51,33 @@ function OnboardingModal({ isOpen, onClose, accountAddress }) {
         setter(e.target.value);
     }
 
-    // const onImageChange = ({ target }) => {
-    //     if(target.files && target.files[0]) {
-    //         const reader = new window.FileReader();
-    //         reader.readAsArrayBuffer(target.files[0]);
-    //         reader.onloadend = async () => {
-    //             let imageData = Buffer(reader.result);
-    //             let cid = await ipfsImageUpload(imageData);
-    //             setProfilePicUrl(`https://ipfs.io/ipfs/${cid}`);
-    //         }
-    //     }
-    // }
+    const onImageChange = ({ target }) => {
+        if(target.files && target.files[0]) {
+            const reader = new window.FileReader();
+            reader.readAsArrayBuffer(target.files[0]);
+            reader.onloadend = async () => {
+                let imageData = Buffer(reader.result);
+                let fileObj = new File([imageData], target.files[0].name, { type: "image/*" });
+                const metadata = await client.store({
+                    name: target.files[0].name,
+                    description: "",
+                    image: fileObj
+                });
+
+                let metadataSplit = metadata.url.split("/", 4);
+                const url = "https://ipfs.io/ipfs/" + metadataSplit[metadataSplit.length - 2] + '/'+ metadataSplit[metadataSplit.length - 1];
+                console.log(url);
+
+                let response = await axios.get(url);
+                console.log(response.data);
+                let image = response.data.image;
+                let imageSplit = image.split("/", 4);
+                const imageUrl = "https://ipfs.io/ipfs/" + imageSplit[imageSplit.length - 2] + '/'+ imageSplit[imageSplit.length - 1];
+                console.log(imageUrl);
+                setProfilePicUrl(imageUrl);
+            }
+        }
+    }
 
     return (
         <CustomModal
@@ -77,13 +87,14 @@ function OnboardingModal({ isOpen, onClose, accountAddress }) {
             modalHeader={`Onboarding`}
             modalFooterButtonText="Sign Up"
             modalButtonOnClick={handleSignUp}
+            modalButtonLoadingState={registeringUser}
         >
             <VStack spacing="10px">
                 <FormControl>
                     <FormLabel borderRadius="full" boxSize="70px" margin="auto">
-                        <Image margin="auto" boxSize="70px" borderRadius="full" src={profilePicUrl == null ? "https://bit.ly/dan-abramov" : profilePicUrl} />
+                        <Image margin="auto" boxSize="70px" borderRadius="full" src={profilePicUrl} />
                     </FormLabel>
-                    <Input display="none" type="file" accept="image/*" />
+                    <Input display="none" onChange={onImageChange} type="file" accept="image/*" />
                 </FormControl>
                 <FormControl>
                     <Input placeholder="accountAddress" disabled value={accountAddress} />
@@ -103,7 +114,7 @@ function OnboardingModal({ isOpen, onClose, accountAddress }) {
                 <FormControl>
                     <Input placeholder="NFT Symbol" onChange={(e) => handleInputChange(e, setNFTCollectionSymbol)} value={nftCollectionSymbol} />
                 </FormControl>
-                <FormControl>
+                {/* <FormControl>
                     <Input placeholder="Token Name" onChange={(e) => handleInputChange(e, setTokenName)} value={tokenName} />
                 </FormControl>
                 <FormControl>
@@ -111,7 +122,7 @@ function OnboardingModal({ isOpen, onClose, accountAddress }) {
                 </FormControl>
                 <FormControl>
                     <Input placeholder="Total Supply" onChange={(e) => handleInputChange(e, setTotalSupply)} value={totalSupply} />
-                </FormControl>
+                </FormControl> */}
             </VStack>
         </CustomModal>
     );

@@ -107,11 +107,13 @@ describe("NFT", function() {
     await creators.deployed();
 
 
+    const [ firstSigner, buyerSigner ] = await ethers.getSigners();
+
     // create creator
-    await creators.registerUser("azure1050", "test", "Test", "http://www.google.com", "NFTCollection", "NFT", "Token", "MT", ethers.utils.parseUnits("100", "ether"));
+    await creators.registerUser("azure1050", "test", "Test", "http://www.google.com", "NFTCollection", "NFT");
 
     // get creator address from creators.
-    let creator = await creators.getCreatorAddress("azure1050");
+    let creator = await creators.getCreatorAddressByUsername("azure1050");
     console.log(creator);
     let Creator = await ethers.getContractFactory("Creator");
     let creatorContract = await Creator.attach(creator);
@@ -123,27 +125,50 @@ describe("NFT", function() {
     let nftContract = await NFT.attach(nftContractAddress);
     
     // mint an nft
-    await nftContract.createToken("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg");
+    await nftContract.connect(firstSigner).createToken("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg");
+    await nftContract.connect(firstSigner).createToken("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg");
+    await nftContract.connect(buyerSigner).createToken("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg");
+    await nftContract.connect(firstSigner).createToken("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg");
     
-    let tokenAddress = await creatorContract.tokenAddress();
+    console.log(await nftContract.tokenURI(2));
+    
+    // let tokenAddress = await creatorContract.tokenAddress();
 
     // approving token
-    await nftContract.approve(nftMarket.address, 1);
+    await nftContract.connect(firstSigner).approve(nftMarket.address, 1);
 
     // list on marketplace 
-    await nftMarket.createMarketItem(nftContractAddress, tokenAddress, 1, ethers.utils.parseUnits("0.1", "ether"), { value: listingPrice });
+    await nftMarket.connect(firstSigner).createMarketItem(nftContractAddress, 1, ethers.utils.parseUnits("0.1", "ether"), { value: listingPrice });
+
+    let balanceOf = (await nftContract.balanceOf(firstSigner.address)).toString();
+    let marketplaceBalance = (await nftContract.balanceOf(nftMarket.address)).toString();
+    console.log(marketplaceBalance);
+
+    let fetchMarketItems = await nftMarket.fetchMarketItems();
+    console.log(fetchMarketItems);
+    for(let i = 0; i < parseInt(balanceOf); i++) {
+      console.log(await nftContract.tokenOfOwnerByIndex(firstSigner.address, i));
+    }
+    
+    // console.log(nftMarket.address);
+    // console.log(await nftMarket.fetchItemsCreated());
 
     // buy from marketplace
-    const [ firstSigner, buyerSigner ] = await ethers.getSigners();
 
     // send tokens to buyer for testing.
-    let Token = await ethers.getContractFactory("Token");
-    let tokenContract = await Token.attach(tokenAddress);
+    // let Token = await ethers.getContractFactory("Token");
+    // let tokenContract = await Token.attach(tokenAddress);
 
-    await tokenContract.connect(firstSigner).transfer(buyerSigner.address, ethers.utils.parseUnits("0.1", "ether"));
+    // await tokenContract.connect(firstSigner).transfer(buyerSigner.address, ethers.utils.parseUnits("0.1", "ether"));
 
-    await tokenContract.connect(buyerSigner).approve(nftMarket.address, ethers.utils.parseUnits("0.1", "ether"));
-    await nftMarket.connect(buyerSigner).createMarketSale(nftContractAddress, 1);
+    // await tokenContract.connect(buyerSigner).approve(nftMarket.address, ethers.utils.parseUnits("0.1", "ether"));
+    await nftMarket.connect(buyerSigner).createMarketSale(nftContractAddress, 1, { value: ethers.utils.parseUnits("0.1", "ether") });
 
-  })
+  });
+
+  // it("asb", async () => {
+  //   const NFTMarket = await ethers.getContractFactory("NFT");
+  //   let nftMarket = await NFTMarket.attach("0xC717011156750527aFbC9873F6334b49b8170B65");
+  //   console.log(`token uri` + await nftMarket.tokenURI(1));
+  // })
 });

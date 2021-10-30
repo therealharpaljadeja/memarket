@@ -3,7 +3,7 @@ import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter,
 
 function CustomModal(props) {
     
-    const { isOpen, onClose, modalHeader, modalCloseButton, children, modalFooterButtonText, modalButtonOnClick } = props;
+    const { isOpen, onClose, modalHeader, modalCloseButton, children, modalFooterButtonText, modalButtonOnClick, modalButtonLoadingState } = props;
 
     return (
         <Modal closeOnOverlayClick={false} isCentered={true} isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
@@ -20,7 +20,7 @@ function CustomModal(props) {
                     {children}
                 </ModalBody>
                 <ModalFooter>
-                    <Button onClick={modalButtonOnClick} width="100%" size="lg">{modalFooterButtonText}</Button>
+                    <Button isLoading={modalButtonLoadingState} onClick={modalButtonOnClick} width="100%" size="lg">{modalFooterButtonText}</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>

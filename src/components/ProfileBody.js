@@ -1,26 +1,26 @@
 import { VStack, Heading, HStack, Button, useDisclosure } from "@chakra-ui/react";
 import BuyTokenModal from "./BuyTokenModal";
 
-function ProfileBody() {
+function ProfileBody({ username, name, bio, nftOwned }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <>
-            <BuyTokenModal isOpen={isOpen} onClose={onClose} tokenName="DAN" />
+            <BuyTokenModal isOpen={isOpen} onClose={onClose} />
             <VStack marginTop="35px !important" spacing={5} width="100%"  alignItems="center">
-                <Heading size="md" fontWeight="700">Dan Abrahmov</Heading>
-                <Heading size="sm">Dan Abrahmov is the react master.</Heading>
+                <Heading size="md" fontWeight="700">{name}</Heading>
+                <Heading size="sm">{bio}</Heading>
                 <HStack justifyContent="center" spacing="40px" width="100%">
                     <VStack>
-                        <Heading fontWeight="700" size="md">100</Heading>
+                        <Heading fontWeight="700" size="md">{nftOwned}</Heading>
                         <Heading size="sm">NFTs Owned</Heading>
                     </VStack>
-                    <VStack>
+                    {/* <VStack>
                         <Heading size="md" fontWeight="700">20</Heading>
                         <Heading size="sm">Token Holders</Heading>
-                    </VStack>
+                    </VStack> */}
                 </HStack>
                 <HStack>
-                    <Button size="sm" onClick={onOpen} >Buy $DAN</Button>
+                    <Button size="sm" onClick={onOpen} disabled >Buy ${username}</Button>
                     <Button disabled size="sm">Propose To DAO</Button>
                     {/* <Button disabled size="sm">Stake $DAN</Button> */}
                 </HStack>

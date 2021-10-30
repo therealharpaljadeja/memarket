@@ -1,14 +1,40 @@
-import { VStack, HStack, Text, Tag, Image, Button, Tabs, TabList, Tab, TabPanel, TabPanels } from "@chakra-ui/react";
+import { VStack, Spinner, HStack, Text, Tag, Image, Button, Tabs, TabList, Tab, TabPanel, TabPanels } from "@chakra-ui/react";
 import Post from "../components/Post";
 import Comment from "../components/Comment";
 import Bid from "../components/Bid";
 import BidHeader from "../components/BidHeader";
+import { useEffect, useContext, useState } from "react/cjs/react.development";
+import { Web3Context } from "../context/Web3Context";
+import { useParams } from "react-router-dom";
 
 function PostPage() {
+
+    const { creator, address, id } = useParams();
+
+    const web3Context = useContext(Web3Context);
+    const { provider, nftMetadataUsingSigner, gettingMetadata } = web3Context;
+    const [ nft, setNFT ] = useState(null);
+
+    useEffect(async () => {
+        if(provider != null) {
+            let nft = await nftMetadataUsingSigner(creator, address, id);
+            console.log(nft);
+            setNFT(nft);
+        }
+    },[]);
+
     return (
-        <VStack spacing={0} width="100%">
-            <Post isExpanded={true} />
-            <Tabs isFitted width="100%">
+        <VStack spacing={0} alignItems="center" width="100%">
+            {
+                gettingMetadata == false ?
+                nft != null ?
+                <Post nft={nft} id={id} isExpanded={false} />
+                :
+                null
+                :
+                <Spinner />
+            }
+            {/* <Tabs isFitted width="100%">
                 <TabList>
                     <Tab>Comments</Tab>
                     <Tab>Bids</Tab>
@@ -26,7 +52,7 @@ function PostPage() {
                         </VStack>
                     </TabPanel>
                 </TabPanels>
-            </Tabs>
+            </Tabs> */}
         </VStack>
     );
 }
