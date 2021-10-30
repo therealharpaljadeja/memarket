@@ -1,29 +1,52 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `npx hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
-const hre = require("hardhat");
+const { ethers } = require("hardhat");
 
-async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
-
-  // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
-
-  await greeter.deployed();
-
-  console.log("Greeter deployed to:", greeter.address);
+async function getDeployerBalance(deployer) {
+  return `Deployer Balance: ${ethers.utils.formatEther(await deployer.getBalance())}`;
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
+async function main() {
+
+  const [ deployer ] = await ethers.getSigners();
+
+  console.log(`Deploying using address: ${deployer.address}`);
+
+  console.log(await getDeployerBalance(deployer));
+
+  console.log("Deploying Marketplace Contract");
+  const NFTMarket = await ethers.getContractFactory("NFTMarket");
+  const nftMarket = await NFTMarket.deploy();
+  await nftMarket.deployed();
+
+  console.log(await getDeployerBalance(deployer));
+  console.log(`Marketplace Deployed at ${nftMarket.address}`);
+
+  console.log("Deploying Creators Contract");
+  const Creators = await ethers.getContractFactory("Creators"); 
+  const creators = await Creators.deploy(nftMarket.address);
+  await creators.deployed();
+  console.log(`Creators deployed at ${creators.address}`);
+
+  console.log(await getDeployerBalance(deployer));
+  // console.log("Deploying a Test Creator Contract");
+  // await creators.registerUser("testUser", "Test", "This is a test user", "https://www.google.com", "TestCollection", "Test", "TestToken", "TT", ethers.utils.parseUnits("100", "ether"));
+  // await creators.registerUser("testUser", "Test", "This is a test user", "https://www.google.com", "TestCollection", "Test");
+
+  
+  // let creator = await creators.getCreatorAddressByUsername("testUser");
+  // console.log(`Creator deployed: ${creator}`);
+  // console.log(await getDeployerBalance(deployer));
+
+  // console.log(`Getting NFTCollection address for ${creator}`);
+  // let Creator = await ethers.getContractFactory("Creator");
+  // let creatorContract = await Creator.attach(creator);
+
+  // let nftContractAddress = await creatorContract.nftCollectionAddress();
+  // console.log(`NFTCollection for ${creator} is deployed at ${nftContractAddress}`);
+
+  // let tokenAddress = await creatorContract.tokenAddress();
+  // console.log(`Token for ${creator} is deployed at ${tokenAddress}`);
+}
+
 main()
   .then(() => process.exit(0))
   .catch((error) => {

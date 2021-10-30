@@ -3,18 +3,18 @@ import ExpandedPostBody from "./ExpandedPostBody";
 import PostBody from "./PostBody";
 import PostHeader from "./PostHeader";
 
-function Post({ isExpanded }) {
+function Post({ isExpanded, nft, id }) {
     return (
-        <>
-            <PostHeader />            
-            <Image src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Red_Square1.jpg" />
+        <VStack width="100%">
+            <PostHeader profilePicUrl={nft.creator.profilePicUrl} name={nft.creator.name} />            
+            <Image marginTop="0px !important" src={nft.image} />
             {
                 isExpanded ?
-                <ExpandedPostBody />
+                <ExpandedPostBody name={nft.name} tokenId={id} isApprovedByOwner={nft.isApprovedByOwner} seller={nft.seller} collectionAddress={nft.collectionAddress} owner={nft.owner} price={nft.price} bio={nft.description} />
                 :
-                <PostBody />
+                <PostBody name={nft.name} tokenId={id} isApprovedByOwner={nft.isApprovedByOwner} collectionAddress={nft.collectionAddress} seller={nft.seller} owner={nft.owner} price={nft.price} bio={nft.description} />
             }
-        </>
+        </VStack>
     );
 }
 

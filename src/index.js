@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Web3Context, Web3ContextProvider } from './context/Web3Context';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Web3ContextProvider>
+      <App />
+    </Web3ContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
