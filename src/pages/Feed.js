@@ -15,7 +15,7 @@ function Feed() {
     }, [])
 
     return (
-        <VStack alignItems="center">
+        <VStack width="100%" alignItems="center">
             {
                 fetchingMarketItems == true ?
                 <Spinner />

@@ -39,6 +39,7 @@ export function Web3ContextProvider({ children }) {
     const [ gettingMetadata, setGettingMetadata ] = useState(null);
     const [ approvingToMarketplace, setApprovingToMarketplace ] = useState(false);
     const [ creatingMarketItem, setCreatingMarketItem ] = useState(false);
+    const [ currentUserNFTsBoughtOnMarketplace, setCurrentUserNFTsBoughtOnMarketplace ] = useState(null);
 
     useEffect(() => {
         if(window.ethereum) {
@@ -164,7 +165,8 @@ export function Web3ContextProvider({ children }) {
 
     async function fetchMyNFTsUsingSigner() {
         setFetchingMyNFTs(true);
-        await fetchMyNFTs(provider);
+        let result = await fetchMyNFTs(provider);
+        setCurrentUserNFTsBoughtOnMarketplace(result);
         setFetchingMyNFTs(false);
     }
 
@@ -215,6 +217,7 @@ export function Web3ContextProvider({ children }) {
                 gettingMetadata,
                 approvingToMarketplace,
                 creatingMarketItem,
+                currentUserNFTsBoughtOnMarketplace,
                 fetchMarketItemsUsingSigner,
                 fetchItemsCreatedUsingSigner,
                 fetchMyNFTsUsingSigner,

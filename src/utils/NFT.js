@@ -71,6 +71,7 @@ export const tokenMetadata = async (provider, creatorAddress, collectionAddress,
     const { name, description } = response.data;
     let ImageUrlSplit = response.data.image.split("/", 4);
     let imageUrl = `https://ipfs.io/ipfs/${ImageUrlSplit[ImageUrlSplit.length - 2] + '/'+ ImageUrlSplit[ImageUrlSplit.length - 1]}`
+    
     let nft = {
         name,
         description,
@@ -81,6 +82,9 @@ export const tokenMetadata = async (provider, creatorAddress, collectionAddress,
         owner,
         isApprovedByOwner
     }
+
+    console.log(nft);
+
     return nft;
 }
 

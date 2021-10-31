@@ -4,13 +4,14 @@ import { MdSettingsInputComponent } from "react-icons/md";
 import { Web3Context } from "../context/Web3Context";
 import SellNFTModal from "./SellNFTModal";
 import { useDisclosure }  from "@chakra-ui/react"; 
+import { ethers } from "ethers";
 
 function PostBody({ owner, bio, collectionAddress, seller, isApprovedByOwner, tokenId, name, price }) {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const web3Context = useContext(Web3Context);
-    const { account, approveToMarketplaceUsingSigner, approvingToMarketplace } = web3Context;
+    const { account, creatingMarketSale, approveToMarketplaceUsingSigner, approvingToMarketplace, createSaleUsingSigner } = web3Context;
 
     return (
         <VStack borderBottom="1px solid" borderColor="brand.200" width="100%" justifyContent="space-between" py={2}>
@@ -39,7 +40,7 @@ function PostBody({ owner, bio, collectionAddress, seller, isApprovedByOwner, to
                             account.toLowerCase() == seller.toLowerCase() ?
                             null 
                             :
-                            <Button height="100%" size="md">Buy</Button>
+                            <Button isLoading={creatingMarketSale} onClick={() => createSaleUsingSigner(collectionAddress, tokenId, ethers.utils.parseUnits(price, "ether"))} height="100%" size="md">Buy</Button>
                         }
                     </>
                 }

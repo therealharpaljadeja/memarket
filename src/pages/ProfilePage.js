@@ -12,16 +12,25 @@ import { Web3Context } from "../context/Web3Context";
 function ProfilePage() {
 
     const web3Context = useContext(Web3Context);
-    const { creator, creatorAddress, getNFTsOwnerByUserUsingSigner, loadingNFT, currentUserNFTs, currentUserNFTOnMarketplace, fetchItemsCreatedUsingSigner } = web3Context;
+    const { creator, creatorAddress, getNFTsOwnerByUserUsingSigner, loadingNFT, currentUserNFTs, currentUserNFTOnMarketplace, currentUserNFTsBoughtOnMarketplace, fetchItemsCreatedUsingSigner, fetchMyNFTsUsingSigner } = web3Context;
     const { username, name, bio, profilePicUrl, nftCollectionName, nftCollectionSymbol } = creator;
     const [ userConnected, setUserConnected ] = useState(false);
+
+    const [ userOwnedNFT, setUserOwnedNFT ] = useState(null);
 
     useEffect(() => {
         if(creatorAddress != null && creator != null) {
             getNFTsOwnerByUserUsingSigner();
             fetchItemsCreatedUsingSigner();
+            fetchMyNFTsUsingSigner();
         } 
     },[creatorAddress]);  
+
+    useEffect(() => {
+        if(currentUserNFTs != null && currentUserNFTsBoughtOnMarketplace != null) {
+            setUserOwnedNFT([...currentUserNFTs, ...currentUserNFTsBoughtOnMarketplace]);
+        }
+    }, [currentUserNFTs, currentUserNFTsBoughtOnMarketplace]);
 
 
     return (
@@ -31,39 +40,39 @@ function ProfilePage() {
                 <>
                     <ProfileHeader username={username} profilePicUrl={profilePicUrl} />
                     {
-                        currentUserNFTs != null && currentUserNFTOnMarketplace != null ?
-                        <ProfileBody nftOwned={currentUserNFTs.length + currentUserNFTOnMarketplace.length} username={username} bio={bio} name={name} />
+                        currentUserNFTs != null && userOwnedNFT != null && currentUserNFTOnMarketplace != null && currentUserNFTsBoughtOnMarketplace != null ?
+                        <ProfileBody nftOwned={userOwnedNFT.length + currentUserNFTOnMarketplace.length} username={username} bio={bio} name={name} />
                         :
                         <Spinner />
                     }
                     <HStack justifyContent="center" width="100%">
                         {
-                            loadingNFT == false && currentUserNFTs != null && currentUserNFTOnMarketplace != null ?
+                            loadingNFT == false && currentUserNFTs != null && currentUserNFTOnMarketplace != null && userOwnedNFT != null ?
                             <Tabs colorScheme="brand" isFitted overflowX="scroll" width="100%">
                                 <TabList>
-                                    <CustomTab icon={<MdOutlineSell />} number={currentUserNFTs.length} />
+                                    <CustomTab icon={<MdOutlineSell />} number={userOwnedNFT.length} />
                                     <CustomTab icon={<BiUser />} number={currentUserNFTOnMarketplace.length} />
                                 </TabList>
                                 <TabPanels>
                                     <TabPanel padding={0}>
                                         {
-                                            currentUserNFTs != null ?
-                                            currentUserNFTs.length != 0 ?
+                                            currentUserNFTs != null || currentUserNFTsBoughtOnMarketplace != null ?
                                             <Grid overflowY="scroll" gridGap="1px" templateColumns="repeat(3, 1fr)">
-                                                
                                                 {
-                                                    currentUserNFTs.map(nft => {
-                                                        let toUrl = `/nft/${nft.creatorAddress}/${nft.collectionAddress}/${nft.tokenId}`
-                                                        return (
-                                                        <Link to={toUrl}>
-                                                            <Image key={nft.name} src={nft.image} />
-                                                        </Link>
-                                                        );
-                                                    })
-                                                }
+                                                    userOwnedNFT != null ?
+                                                            userOwnedNFT.map((nft, index) => {
+                                                                let toUrl = `/nft/${nft.creatorAddress}/${nft.collectionAddress}/${nft.tokenId}`
+                                                                return (
+                                                                <Link to={toUrl}>
+                                                                    <Image key={index} src={nft.image} />
+                                                                </Link>
+                                                                );
+                                                            })
+
+                                                    :
+                                                    <Heading pt={3} textAlign="center" size="sm">No NFTs</Heading>
+                                                }     
                                             </Grid>
-                                            :
-                                            <Heading pt={3} textAlign="center" size="sm">No NFTs</Heading>
                                             :
                                             <Spinner />    
                                         }
