@@ -8,7 +8,7 @@ function CustomModal(props) {
     return (
         <Modal closeOnOverlayClick={false} isCentered={true} isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
             <ModalOverlay  />
-            <ModalContent>
+            <ModalContent mx={3}>
                 <ModalHeader color="black.600">{modalHeader}</ModalHeader>
                 {
                     modalCloseButton ?
