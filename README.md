@@ -1,3 +1,5 @@
+# MeMarket - NFT Marketplace on Velas Blockchain.
+
 ## Inspiration
 - Psuedo-permissionless marketplaces like Opensea, lets users create NFTs but these NFTs are operated by the Opensea StoreFront contract. 
 - Why not give every user their own NFT collection to mint NFTs from?
@@ -21,3 +23,4 @@
 - MeMarket plans to let creators spin up their own **token governed DAO's**
 - MeMarket plans to let creators create Royalty based NFTs and **Multi-Royalty** (Collaboration b/w creators / brands) based NFTs.
 
+#### Youtube Video Link - https://youtu.be/vIhJcqJqiQM
